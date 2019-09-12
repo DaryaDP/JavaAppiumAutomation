@@ -34,6 +34,8 @@ public class FirstTest {
         capabilities.setCapability("app", "/Users/darya/Desktop/JavaAppiumAutomation/apks/org.wikipedia.apk");
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
     }
 
     @After
@@ -722,6 +724,9 @@ public class FirstTest {
                 "We don't found page title"
         );
     }
+
+
+
 
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
