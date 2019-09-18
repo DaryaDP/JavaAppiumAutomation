@@ -4,6 +4,9 @@ import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SearchPageObject extends MainPageObject {
 
     private static final String
@@ -12,7 +15,9 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_CANCEL_BUTTON = "org.wikipedia:id/search_close_btn",
             SEARCH_RESULT_BY_SUBSTRING_TPL="//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']",
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
+            SEARCH_LABEL_ELEMENT = "org.wikipedia:id/search_src_text",
+            SEARCH_RESULT_TITLE_ELEMENT = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -105,6 +110,67 @@ public class SearchPageObject extends MainPageObject {
                 By.xpath(SEARCH_RESULT_ELEMENT),
                 "We have found some results by request"
         );
+    }
+
+    public void checkSearchLabelPresent(){
+        this.waitForElementPresent(
+                By.id(SEARCH_LABEL_ELEMENT),
+                "Cannot find search label",
+                5
+        );
+    }
+
+    public String getSearchLabelTitle(){
+        WebElement search_title = waitForElementPresent(
+                By.id(SEARCH_LABEL_ELEMENT),
+                "Cannot find search label",
+                5
+        );
+        return search_title.getAttribute("text");
+    }
+
+    public void clearSearchField(){
+        this.waitForElementAndClear(
+                By.id(SEARCH_LABEL_ELEMENT),
+                "Cannot find search field",
+                5
+        );
+    }
+
+    public void checkNoResultsOfSearch(){
+        this.waitForElementNotPresent(
+                By.xpath(SEARCH_RESULT_TITLE_ELEMENT),
+                "Results of search still present",
+                5
+        );
+    }
+
+    public List<WebElement>  getTheListOfFoundedResults(){
+        List<WebElement> search_results = waitForSeveralElements(
+                By.xpath(SEARCH_RESULT_TITLE_ELEMENT),
+                "there is no results of search",
+                10
+        );
+        return  search_results;
+    }
+
+    public int getTHeCountOfSearchResult(){
+        List<WebElement> search_results = getTheListOfFoundedResults();
+        return search_results.size();
+    }
+
+
+
+    public int getTheCountOfSearchResultsByTerm(String search_term){
+        List<WebElement> search_results = getTheListOfFoundedResults();
+        AtomicInteger counter = new AtomicInteger();
+        search_results.forEach(webElement -> {
+            if (webElement.getAttribute("text").toLowerCase().contains(search_term)) {
+                counter.getAndIncrement();
+            }
+            ;
+        });
+        return search_results.size();
     }
 
 

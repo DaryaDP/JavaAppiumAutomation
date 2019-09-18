@@ -54,4 +54,45 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.waitForEmptyResulsLabel();
         SearchPageObject.assertThereIsNoResultOfSearch();
     }
+
+
+    @Test
+    public void testSearchLabel() {
+
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.checkSearchLabelPresent();
+        String label = SearchPageObject.getSearchLabelTitle();
+        assertEquals(
+                "There is no label 'Search…'!",
+                "Search…",
+                label
+        );
+    }
+
+    @Test
+    public void testSearchSeveralArticles() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Java");
+        int search_result_size = SearchPageObject.getAmountOfFoundArticles();
+        assertTrue(search_result_size > 0);
+        SearchPageObject.clearSearchField();
+        SearchPageObject.checkNoResultsOfSearch();
+    }
+
+    @Test
+    public void testSearchResultWithWord() {
+
+        String search_term = "java";
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine(search_term);
+        int founded_results = SearchPageObject.getTHeCountOfSearchResult();
+        int founded_result_by_search_term = SearchPageObject.getTheCountOfSearchResultsByTerm(search_term);
+
+        assertTrue(founded_results == founded_result_by_search_term);
+
+    }
+
 }

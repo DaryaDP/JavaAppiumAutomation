@@ -50,4 +50,44 @@ public class MyListsTest extends CoreTestCase {
 
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
     }
+
+    @Test
+    public void testSaveTwoArticlesToMyListAndDeleteOne() {
+        String name_of_folder = "Learning programming";
+        String first_search = "Java";
+        String first_article_name = "Java (programming language)";
+        String second_article_name = "JavaScript";
+
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine(first_search);
+        SearchPageObject.clickByArticleWithSubstring(first_article_name);
+        String title_of_first_article = ArticlePageObject.getArticleTitle();
+        ArticlePageObject.addArticleToMyList(name_of_folder);
+        ArticlePageObject.initNewSearch();
+        SearchPageObject.typeSearchLine(first_search);
+        SearchPageObject.clickByArticleWithSubstring(second_article_name);
+        String title_of_second_article = ArticlePageObject.getArticleTitle();
+        ArticlePageObject.addArticleToMyListAlreadyCreate(name_of_folder);
+        ArticlePageObject.closeArticle();
+        ArticlePageObject.openMyLists();
+        MyListsPageObject.openFolderByName(name_of_folder);
+        MyListsPageObject.findArticleInFolderByName(title_of_first_article);
+        MyListsPageObject.findArticleInFolderByName(title_of_second_article);
+
+        MyListsPageObject.deleteArticleInFolderByName(first_article_name);
+
+        MyListsPageObject.findArticleInFolderByName(title_of_second_article);
+        MyListsPageObject.openArticleInFolderByName(second_article_name);
+        String title_of_second_article_in_folder = ArticlePageObject.getArticleTitle();
+
+        assertEquals(
+                "Article title is not the same as in article in folder",
+                title_of_second_article,
+                title_of_second_article_in_folder
+        );
+    }
 }

@@ -38,4 +38,20 @@ public class ArticleTests extends CoreTestCase {
         ArticlePageObject.waitForTitleElement();
         ArticlePageObject.swipeToFooter();
     }
+
+    @Test
+    public void testCheckArticleHasTitleWithoutWaiting() {
+
+        String search = "Java";
+        String article_name = "Java (programming language)";
+
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine(search);
+        SearchPageObject.clickByArticleWithSubstring(article_name);
+        ArticlePageObject.checkTitleElementPresentWithoutWaiting();
+    }
+
 }

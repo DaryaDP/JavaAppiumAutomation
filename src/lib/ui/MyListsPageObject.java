@@ -7,8 +7,11 @@ public class MyListsPageObject extends MainPageObject {
 
     private static final String
             FOLDER_BY_NAME_TPL = "//*[contains(@text,'{FOLDER_NAME}')]",
-            ARTICLE_BY_TITLE_TPL = "//*[@text='{TITLE}']";
+            ARTICLE_BY_TITLE_TPL = "//*[@text='{TITLE}']",
+            NAME_OF_ARTICLE_IN_FOLDER_TPL = "//*[contains(@text,'{SUBSTRING}')]";
 
+
+    /* TEMPLATE METHODS */
     private static String getFolderXpathByName(String name_of_folder){
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
     }
@@ -16,6 +19,12 @@ public class MyListsPageObject extends MainPageObject {
     private static String getSavedArticleXpathByTitle(String article_title){
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
     }
+
+    private static String getNameOfArticleInFolderTpl(String article_title){
+        return NAME_OF_ARTICLE_IN_FOLDER_TPL.replace("{SUBSTRING}", article_title);
+    }
+
+    /* TEMPLATE METHODS */
 
 
     public MyListsPageObject(AppiumDriver driver){
@@ -55,6 +64,32 @@ public class MyListsPageObject extends MainPageObject {
                 By.xpath(article_xpath),
                 "Cannot find saved article by title " + article_title,
                 15
+        );
+    }
+
+    public void findArticleInFolderByName(String article_name){
+        String name = getNameOfArticleInFolderTpl(article_name);
+        this.waitForElementPresent(
+                By.xpath(name),
+                "Unable to find added article",
+                5
+        );
+    }
+
+    public void deleteArticleInFolderByName(String article_name){
+        String name = getNameOfArticleInFolderTpl(article_name);
+            this.swipeElementToLeft(
+                By.xpath(name),
+                "Cannot find saved article"
+        );
+    }
+
+    public void openArticleInFolderByName(String article_name){
+        String name = getNameOfArticleInFolderTpl(article_name);
+            this.waitForElementAndClick(
+                    By.xpath(name),
+                    "Unable to find added article",
+                    5
         );
     }
 

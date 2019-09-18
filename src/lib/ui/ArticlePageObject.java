@@ -14,16 +14,35 @@ public class ArticlePageObject extends MainPageObject {
         ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
         MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
         MY_LIST_OK_BUTTON = "//*[@text='OK']",
-        CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']";
+        CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']",
+        OPEN_NEW_SEARCH_BUTTON = "//android.widget.TextView[@content-desc='Search Wikipedia']",
+        NAME_OF_FOLDER_TPL = "//*[contains(@text,'{SUBSTRING}')]",
+        MY_LISTS_BUTTON = "//android.widget.FrameLayout[@content-desc='My lists']";
 
     public ArticlePageObject(AppiumDriver driver){
         super(driver);
     }
+
+
+    /* TEMPLATE METHODS */
+    private static String getNameOfFolderTpl(String substring) {
+        return NAME_OF_FOLDER_TPL.replace("{SUBSTRING}",substring);
+    }
+
+    /* TEMPLATE METHODS */
+
     public WebElement waitForTitleElement(){
         return this.waitForElementPresent(
                 By.id(TITLE),
                 "Cannot find article title on the page",
                 15);
+    }
+
+    public void checkTitleElementPresentWithoutWaiting(){
+        this.assertElementPresent(
+                By.id(TITLE),
+                "We don't found page title"
+        );
     }
 
     public String getArticleTitle(){
@@ -84,5 +103,46 @@ public class ArticlePageObject extends MainPageObject {
                 "Cannot close article, cannot find X link",
                 5
         );
+    }
+
+    public void initNewSearch(){
+        this.waitForElementAndClick(
+                By.xpath(OPEN_NEW_SEARCH_BUTTON),
+                "Cannot find button to open new search",
+                5
+        );
+    }
+
+
+    public void addArticleToMyListAlreadyCreate(String name_of_folder){
+
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_BUTTON),
+                "Cannot find button to open article options",
+                5
+        );
+
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                "Cannot find options to add article to reading list",
+                5
+        );
+
+        String folder_name = getNameOfFolderTpl(name_of_folder);
+
+        this.waitForElementAndClick(
+                By.xpath(folder_name),
+                "Cannot find just created folder",
+                5
+        );
+    }
+
+    public void openMyLists(){
+        this.waitForElementAndClick(
+                By.xpath(MY_LISTS_BUTTON),
+                "Cannot find navigation button to 'My lists'",
+                5
+        );
+
     }
 }
