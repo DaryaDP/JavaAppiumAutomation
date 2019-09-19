@@ -17,7 +17,8 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
             SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
             SEARCH_LABEL_ELEMENT = "org.wikipedia:id/search_src_text",
-            SEARCH_RESULT_TITLE_ELEMENT = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+            SEARCH_RESULT_TITLE_ELEMENT = "//*[@resource-id='org.wikipedia:id/page_list_item_title']",
+            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']/../*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{DESCRIPTION}']";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -26,6 +27,10 @@ public class SearchPageObject extends MainPageObject {
     /* TEMPLATE METHODS */
     private static String getResultSearchElement(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}",substring);
+    }
+
+    private static String getResultSearchElementByTitleAndDescription(String title, String description){
+        return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL.replace("{TITLE}", title).replace("{DESCRIPTION}",description);
     }
 
     /* TEMPLATE METHODS */
@@ -173,6 +178,14 @@ public class SearchPageObject extends MainPageObject {
         return search_results.size();
     }
 
+    public void waitForElementByTitleAndDescription(String title, String description){
+        String name = getResultSearchElementByTitleAndDescription(title,description);
+        this.waitForElementPresent(
+                By.xpath(name),
+                "Unable to find result of search by title " + title + " and description " + description,
+                15
+    );
+    }
 
 }
 

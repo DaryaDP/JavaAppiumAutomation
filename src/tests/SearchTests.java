@@ -95,4 +95,17 @@ public class SearchTests extends CoreTestCase {
 
     }
 
+    @Test
+    public void testSearchByTitleAndDescription() {
+
+        String search_term = "java";
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine(search_term);
+        SearchPageObject.waitForElementByTitleAndDescription("Java", "Island of Indonesia");
+        SearchPageObject.waitForElementByTitleAndDescription("JavaScript","Programming language");
+        SearchPageObject.waitForElementByTitleAndDescription("Java (programming language)","Object-oriented programming language");
+    }
+
+
 }
