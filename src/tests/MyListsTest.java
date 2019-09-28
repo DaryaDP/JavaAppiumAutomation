@@ -1,10 +1,15 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.ArticlePageObject;
 import lib.ui.MyListsPageObject;
 import lib.ui.NavigationUI;
 import lib.ui.SearchPageObject;
+import lib.ui.factories.ArticlePageObjectFactory;
+import lib.ui.factories.MyListsPageObjectFactory;
+import lib.ui.factories.NavigationUIFactory;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
 public class MyListsTest extends CoreTestCase {
@@ -14,22 +19,31 @@ public class MyListsTest extends CoreTestCase {
 
         String name_of_folder = "Learning programming";
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-        NavigationUI NavigationUI = new NavigationUI(driver);
-        MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
         ArticlePageObject.waitForTitleElement();
-
         String article_title = ArticlePageObject.getArticleTitle();
 
-        ArticlePageObject.addArticleToMyList(name_of_folder);
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+        }
+        else{
+            ArticlePageObject.addArticlesToMySaved();
+        }
+
         ArticlePageObject.closeArticle();
         NavigationUI.clickMyLists();
-        MyListsPageObject.openFolderByName(name_of_folder);
+
+        if(Platform.getInstance().isAndroid()){
+            MyListsPageObject.openFolderByName(name_of_folder);
+        }
+
         MyListsPageObject.swipeByArticleToDelete(article_title);
         MyListsPageObject.waitForArticleToDisappearByTitle(article_title);
 
@@ -40,7 +54,7 @@ public class MyListsTest extends CoreTestCase {
 
         String search_line = "java";
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine(search_line);
@@ -52,37 +66,66 @@ public class MyListsTest extends CoreTestCase {
     }
 
     @Test
-    public void testSaveTwoArticlesToMyListAndDeleteOne() {
+    public void testSaveTwoArticlesToMyListAndDeleteOne() throws InterruptedException {
         String name_of_folder = "Learning programming";
         String first_search = "Java";
         String first_article_name = "Java (programming language)";
         String second_article_name = "JavaScript";
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-        MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
+        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine(first_search);
         SearchPageObject.clickByArticleWithSubstring(first_article_name);
-        String title_of_first_article = ArticlePageObject.getArticleTitle();
-        ArticlePageObject.addArticleToMyList(name_of_folder);
-        ArticlePageObject.initNewSearch();
+        String title_of_first_article = ArticlePageObject.getArticleTitle(first_article_name);
+
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+        }
+        else{
+            ArticlePageObject.addArticlesToMySaved();
+        }
+
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.initNewSearch();
+        }
+        else{
+            ArticlePageObject.closeArticle();
+        }
+        if(Platform.getInstance().isIOS()){
+            SearchPageObject.clearSearchField();
+        }
+
+        SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine(first_search);
         SearchPageObject.clickByArticleWithSubstring(second_article_name);
-        String title_of_second_article = ArticlePageObject.getArticleTitle();
-        ArticlePageObject.addArticleToMyListAlreadyCreate(name_of_folder);
+
+        String title_of_second_article = ArticlePageObject.getArticleTitle(second_article_name);
+
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addArticleToMyListAlreadyCreate(name_of_folder);
+        }
+        else{
+            ArticlePageObject.addArticlesToMySaved();
+        }
         ArticlePageObject.closeArticle();
-        ArticlePageObject.openMyLists();
-        MyListsPageObject.openFolderByName(name_of_folder);
+        NavigationUI.clickMyLists();
+        if(Platform.getInstance().isAndroid()){
+            MyListsPageObject.openFolderByName(name_of_folder);
+        }
+
         MyListsPageObject.findArticleInFolderByName(title_of_first_article);
         MyListsPageObject.findArticleInFolderByName(title_of_second_article);
 
-        MyListsPageObject.deleteArticleInFolderByName(first_article_name);
+        MyListsPageObject.swipeByArticleToDelete(first_article_name);
 
         MyListsPageObject.findArticleInFolderByName(title_of_second_article);
         MyListsPageObject.openArticleInFolderByName(second_article_name);
-        String title_of_second_article_in_folder = ArticlePageObject.getArticleTitle();
+        Thread.sleep(20000);
+        String title_of_second_article_in_folder = ArticlePageObject.getArticleTitle(second_article_name);
 
         assertEquals(
                 "Article title is not the same as in article in folder",

@@ -1,23 +1,26 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import lib.Platform;
 
-public class ArticlePageObject extends MainPageObject {
-    private static final String
+abstract  public class ArticlePageObject extends MainPageObject {
 
-        TITLE= "id:org.wikipedia:id/view_page_title_text",
-        FOOTER_ELEMENT = "xpath://*[@text='View page in browser']",
-        OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc='More options']",
-        OPTIONS_ADD_TO_MY_LIST_BUTTON = "xpath://*[contains(@text,'Add to reading list')]",
-        ADD_TO_MY_LIST_OVERLAY = "id:org.wikipedia:id/onboarding_button",
-        MY_LIST_NAME_INPUT = "id:org.wikipedia:id/text_input",
-        MY_LIST_OK_BUTTON = "xpath://*[@text='OK']",
-        CLOSE_ARTICLE_BUTTON = "xpath://android.widget.ImageButton[@content-desc='Navigate up']",
-        OPEN_NEW_SEARCH_BUTTON = "xpath://android.widget.TextView[@content-desc='Search Wikipedia']",
-        NAME_OF_FOLDER_TPL = "xpath://*[contains(@text,'{SUBSTRING}')]",
-        MY_LISTS_BUTTON = "xpath://android.widget.FrameLayout[@content-desc='My lists']";
+    protected static String
+        TITLE,
+        TITLE_TPL,
+        FOOTER_ELEMENT,
+        OPTIONS_BUTTON,
+        OPTIONS_ADD_TO_MY_LIST_BUTTON,
+        ADD_TO_MY_LIST_OVERLAY,
+        MY_LIST_NAME_INPUT,
+        MY_LIST_OK_BUTTON,
+        CLOSE_ARTICLE_BUTTON,
+        OPEN_NEW_SEARCH_BUTTON,
+        NAME_OF_FOLDER_TPL,
+        MY_LISTS_BUTTON,
+        SYNC_ARTICLES_TITLE,
+        CLOSE_SYNC_ARTICLES_BUTTON;
 
     public ArticlePageObject(AppiumDriver driver){
         super(driver);
@@ -29,14 +32,33 @@ public class ArticlePageObject extends MainPageObject {
         return NAME_OF_FOLDER_TPL.replace("{SUBSTRING}",substring);
     }
 
+    private static String getTitleOfArticleTpl(String substring) {
+        return TITLE_TPL.replace("{TITLE}",substring);
+    }
+
     /* TEMPLATE METHODS */
 
     public WebElement waitForTitleElement(){
-        return this.waitForElementPresent(
-                TITLE,
-                "Cannot find article title on the page",
-                15);
+        return waitForTitleElement(null);
     }
+
+    public WebElement waitForTitleElement(String name){
+        if (Platform.getInstance().isIOS()) {
+            String name_of_title = getTitleOfArticleTpl(name);
+            return this.waitForElementPresent(
+                    name_of_title,
+                    "Cannot find article title on the page",
+                    15);
+
+        }
+        else {
+            return this.waitForElementPresent(
+                    TITLE,
+                    "Cannot find article title on the page",
+                    15);
+        }
+    }
+
 
     public void checkTitleElementPresentWithoutWaiting(){
         this.assertElementPresent(
@@ -46,15 +68,36 @@ public class ArticlePageObject extends MainPageObject {
     }
 
     public String getArticleTitle(){
-        WebElement title_element = waitForTitleElement();
-        return title_element.getAttribute("text");
+        return getArticleTitle(null);
     }
 
+
+    public String getArticleTitle(String title){
+        if (Platform.getInstance().isIOS()){
+            WebElement title_element = waitForTitleElement(title);
+            return title_element.getAttribute("name");
+
+        }
+        else {
+            WebElement title_element = waitForTitleElement();
+            return title_element.getAttribute("text");
+        }
+    }
+
+
     public void swipeToFooter(){
-        this.swipeUpToFindElement(
-                FOOTER_ELEMENT,
-                "Cannot find the end of the article",
-                20);
+        if (Platform.getInstance().isAndroid()) {
+            this.swipeUpToFindElement(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end of the article",
+                    40);
+        }
+        else{
+            this.swipeUpTillElementAppear(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end of the article",
+                    1000);
+        }
     }
 
     public void addArticleToMyList(String name_of_folder){
@@ -143,6 +186,24 @@ public class ArticlePageObject extends MainPageObject {
                 "Cannot find navigation button to 'My lists'",
                 5
         );
-
     }
+
+    public void addArticlesToMySaved(){
+        this.waitForElementAndClick(
+                OPTIONS_ADD_TO_MY_LIST_BUTTON,
+                "Cannot find option to add article to reading list",
+                5
+        );
+        int count = this.getAmountOfElements(
+                SYNC_ARTICLES_TITLE
+        );
+        if (count >0){
+            this.waitForElementAndClick(
+                    CLOSE_SYNC_ARTICLES_BUTTON,
+                    "Unable to find close button",
+                    5
+            );
+        }
+    }
+
 }

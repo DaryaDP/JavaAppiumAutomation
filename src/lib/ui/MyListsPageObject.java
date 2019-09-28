@@ -1,14 +1,14 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import lib.Platform;
 
-public class MyListsPageObject extends MainPageObject {
+abstract public class MyListsPageObject extends MainPageObject {
 
-    private static final String
-            FOLDER_BY_NAME_TPL = "xpath://*[contains(@text,'{FOLDER_NAME}')]",
-            ARTICLE_BY_TITLE_TPL = "xpath://*[@text='{TITLE}']",
-            NAME_OF_ARTICLE_IN_FOLDER_TPL = "xpath://*[contains(@text,'{SUBSTRING}')]";
+    protected static String
+            FOLDER_BY_NAME_TPL,
+            ARTICLE_BY_TITLE_TPL,
+            NAME_OF_ARTICLE_IN_FOLDER_TPL;
 
 
     /* TEMPLATE METHODS */
@@ -42,15 +42,21 @@ public class MyListsPageObject extends MainPageObject {
     }
 
     public void swipeByArticleToDelete(String article_title){
-        String article_xpath = getFolderXpathByName(article_title);
+        String article_xpath = getSavedArticleXpathByTitle(article_title);
         this.swipeElementToLeft(
                 article_xpath,
                 "Cannot find saved article"
         );
+
+        if (Platform.getInstance().isIOS()){
+            this.clickElementToTheRightUpperCorner(
+                    article_xpath,
+                    "Cannot find saved article");
+        }
     }
 
     public void waitForArticleToDisappearByTitle(String article_title){
-        String article_xpath = getFolderXpathByName(article_title);
+        String article_xpath = getSavedArticleXpathByTitle(article_title);
         this.waitForElementNotPresent(
                 article_xpath,
                 "Saved article still present with title " + article_title,
