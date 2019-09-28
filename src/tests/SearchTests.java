@@ -91,7 +91,6 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.typeSearchLine(search_term);
         int founded_results = SearchPageObject.getTHeCountOfSearchResult();
         int founded_result_by_search_term = SearchPageObject.getTheCountOfSearchResultsByTerm(search_term);
-
         assertTrue(founded_results == founded_result_by_search_term);
 
     }

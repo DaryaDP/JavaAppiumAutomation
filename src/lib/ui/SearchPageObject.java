@@ -184,12 +184,24 @@ abstract public class SearchPageObject extends MainPageObject {
     public int getTheCountOfSearchResultsByTerm(String search_term){
         List<WebElement> search_results = getTheListOfFoundedResults();
         AtomicInteger counter = new AtomicInteger();
-        search_results.forEach(webElement -> {
-            if (webElement.getAttribute("text").toLowerCase().contains(search_term)) {
-                counter.getAndIncrement();
-            }
-            ;
-        });
+        if (Platform.getInstance().isAndroid()) {
+
+            search_results.forEach(webElement -> {
+                if (webElement.getAttribute("text").toLowerCase().contains(search_term)) {
+                    counter.getAndIncrement();
+                }
+                ;
+            });
+        }else {
+
+            search_results.forEach(webElement -> {
+                if (webElement.getAttribute("name").toLowerCase().contains(search_term)) {
+                    counter.getAndIncrement();
+                }
+                ;
+            });
+
+        }
         return search_results.size();
     }
 

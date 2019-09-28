@@ -14,8 +14,8 @@ public class iOSSearchPageObject extends SearchPageObject {
         SEARCH_EMPTY_RESULT_ELEMENT = "xpath://XCUIElementTypeStaticText[@name='No results found']";
         SEARCH_LABEL_ELEMENT = "xpath://XCUIElementTypeSearchField[@value='Search Wikipedia']";
         SEARCH_CLEAR_MINI_BUTTON = "id:clear mini";
+        SEARCH_RESULT_TITLE_ELEMENT = "xpath://XCUIElementTypeLink";
 
-        SEARCH_RESULT_TITLE_ELEMENT = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']";
         SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']/../*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{DESCRIPTION}']";
     }
 
