@@ -3,6 +3,7 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 import lib.Platform;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract  public class ArticlePageObject extends MainPageObject {
 
@@ -22,7 +23,7 @@ abstract  public class ArticlePageObject extends MainPageObject {
         SYNC_ARTICLES_TITLE,
         CLOSE_SYNC_ARTICLES_BUTTON;
 
-    public ArticlePageObject(AppiumDriver driver){
+    public ArticlePageObject(RemoteWebDriver driver){
         super(driver);
     }
 
@@ -78,9 +79,13 @@ abstract  public class ArticlePageObject extends MainPageObject {
             return title_element.getAttribute("name");
 
         }
-        else {
+        else if (Platform.getInstance().isIOS()){
             WebElement title_element = waitForTitleElement();
             return title_element.getAttribute("text");
+        }
+        else{
+            WebElement title_element = waitForTitleElement();
+            return title_element.getText();
         }
     }
 

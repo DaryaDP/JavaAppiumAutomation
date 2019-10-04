@@ -2,6 +2,7 @@ package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.MyListsPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class iOSMyListsPageObject extends MyListsPageObject {
 
@@ -10,7 +11,7 @@ public class iOSMyListsPageObject extends MyListsPageObject {
         NAME_OF_ARTICLE_IN_FOLDER_TPL = "xpath://XCUIElementTypeLink[contains(@name,'{SUBSTRING}')]";
     }
 
-    public iOSMyListsPageObject(AppiumDriver driver){
+    public iOSMyListsPageObject(RemoteWebDriver driver){
         super(driver);
     }
 }
