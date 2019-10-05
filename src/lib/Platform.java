@@ -1,6 +1,5 @@
 package lib;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -49,18 +48,15 @@ public class Platform {
     }
 
     public boolean isAndroid(){
-
         return isPlatform(PLATFORM_ANDROID);
     }
 
     public boolean isIOS(){
-
         return isPlatform(PLATFORM_IOS );
     }
 
 
     public boolean isMW(){
-
         return isPlatform(PLATFORM_MOBILE_APP );
     }
 
@@ -93,38 +89,13 @@ public class Platform {
         return capabilities;
     }
 
-//    private ChromeOptions getMWChromeOptions(){
-//        Map<String, Object> deviceMetrics = new HashMap<String, Object>();
-//        deviceMetrics.put("width", 360);
-//        deviceMetrics.put("height", 640);
-//        deviceMetrics.put("pixelRatio", 3.0);
-//        Map<String, Object> mobileEmulation = new HashMap<String, Object>();
-//        mobileEmulation.put("deviceMetrics", deviceMetrics);
-//        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        chromeOptions.addArguments("window-size=360,640");
-//
-//        System.out.println("yyyyyy");
-//
-//
-//
-//
-//        return chromeOptions;
-//    }
-
-
     private ChromeOptions getMWChromeOptions() {
-        Map<String, Object> deviceMetrics = new HashMap<String, Object>();
-        deviceMetrics.put("width", 360);
-        deviceMetrics.put("height", 640);
-        deviceMetrics.put("pixelRatio", 3.0);
-
-        Map<String, Object> mobileEmulation = new HashMap<String, Object>();
-        mobileEmulation.put("deviceMetrics", deviceMetrics);
-        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
+        Map<String, String> mobileEmulation = new HashMap<>();
+        mobileEmulation.put("deviceName", "Nexus 5");
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("window-size=340,640");
+        chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
+
         return chromeOptions;
     }
 

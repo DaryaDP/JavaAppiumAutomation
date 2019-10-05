@@ -8,20 +8,18 @@ import org.junit.Test;
 public class SearchTests extends CoreTestCase {
 
     @Test
-    public void testSearch() throws InterruptedException {
+    public void testSearch(){
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        Thread.sleep(10 * 1000);
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitForSearchResult("bject-oriented programming language");
     }
 
     @Test
-    public void testCancelSearch() throws InterruptedException {
+    public void testCancelSearch(){
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        Thread.sleep(10 * 1000);
 
         SearchPageObject.initSearchInput();
         SearchPageObject.waitForCancelButtonToAppear();

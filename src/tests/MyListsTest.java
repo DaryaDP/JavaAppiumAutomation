@@ -2,10 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.Platform;
-import lib.ui.ArticlePageObject;
-import lib.ui.MyListsPageObject;
-import lib.ui.NavigationUI;
-import lib.ui.SearchPageObject;
+import lib.ui.*;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
@@ -14,19 +11,24 @@ import org.junit.Test;
 
 public class MyListsTest extends CoreTestCase {
 
+    private static final String login = "Daryadp";
+    private static final String password = "Qwerty1234";
+
+
     @Test
-    public void testSaveFirstArticleToMyList() {
+    public void testSaveFirstArticleToMyList(){
 
         String name_of_folder = "Learning programming";
-
+        String search_line = "Java";
+        String substring = "bject-oriented programming language";
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         NavigationUI NavigationUI = NavigationUIFactory.get(driver);
         MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
 
         SearchPageObject.initSearchInput();
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
+        SearchPageObject.typeSearchLine(search_line);
+        SearchPageObject.clickByArticleWithSubstring(substring);
         ArticlePageObject.waitForTitleElement();
         String article_title = ArticlePageObject.getArticleTitle();
 
@@ -34,10 +36,24 @@ public class MyListsTest extends CoreTestCase {
             ArticlePageObject.addArticleToMyList(name_of_folder);
         }
         else{
+            ArticlePageObject.addArticleToMySavedBeforeAuth();
+        }
+
+        if (Platform.getInstance().isMW()) {
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            Auth.enterLoginData(login, password);
+            Auth.clickAuthButton();
+            ArticlePageObject.waitForTitleElement();
+
+            assertEquals("We are not on the same page after login",
+                    article_title,
+                    ArticlePageObject.getArticleTitle()
+            );
             ArticlePageObject.addArticlesToMySaved();
         }
 
         ArticlePageObject.closeArticle();
+        NavigationUI.openNavigation();
         NavigationUI.clickMyLists();
 
         if(Platform.getInstance().isAndroid()){
@@ -66,7 +82,7 @@ public class MyListsTest extends CoreTestCase {
     }
 
     @Test
-    public void testSaveTwoArticlesToMyListAndDeleteOne() throws InterruptedException {
+    public void testSaveTwoArticlesToMyListAndDeleteOne(){
         String name_of_folder = "Learning programming";
         String first_search = "Java";
         String first_article_name = "Java (programming language)";
@@ -124,7 +140,6 @@ public class MyListsTest extends CoreTestCase {
 
         MyListsPageObject.findArticleInFolderByName(title_of_second_article);
         MyListsPageObject.openArticleInFolderByName(second_article_name);
-        Thread.sleep(20000);
         String title_of_second_article_in_folder = ArticlePageObject.getArticleTitle(second_article_name);
 
         assertEquals(

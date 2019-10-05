@@ -10,14 +10,13 @@ import org.junit.Test;
 public class ArticleTests extends CoreTestCase {
 
     @Test
-    public void testCompareArticleTitle() {
+    public void testCompareArticleTitle(){
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
-
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("bject-oriented programming language");
         ArticlePageObject.waitForTitleElement();
         String article_title =ArticlePageObject.getArticleTitle();
 
@@ -29,20 +28,19 @@ public class ArticleTests extends CoreTestCase {
     }
 
     @Test
-    public void testSwipeArticle() {
+    public void testSwipeArticle(){
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
-
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("bject-oriented programming language");
         ArticlePageObject.waitForTitleElement();
         ArticlePageObject.swipeToFooter();
     }
 
     @Test
-    public void testCheckArticleHasTitleWithoutWaiting() {
+    public void testCheckArticleHasTitleWithoutWaiting(){
 
         String search = "Java";
         String article_name = "Java (programming language)";
