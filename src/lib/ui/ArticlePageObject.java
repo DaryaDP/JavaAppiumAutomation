@@ -262,4 +262,17 @@ abstract  public class ArticlePageObject extends MainPageObject {
         }
     }
 
-}
+    public boolean checkArticleISSaved(){
+        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    }
+
+
+
+

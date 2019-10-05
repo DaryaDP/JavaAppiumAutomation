@@ -85,8 +85,8 @@ public class MyListsTest extends CoreTestCase {
     public void testSaveTwoArticlesToMyListAndDeleteOne(){
         String name_of_folder = "Learning programming";
         String first_search = "Java";
-        String first_article_name = "Java (programming language)";
-        String second_article_name = "JavaScript";
+        String first_article_name = "bject-oriented programming language";
+        String second_article_name = "island of Indonesia";
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
@@ -102,13 +102,27 @@ public class MyListsTest extends CoreTestCase {
             ArticlePageObject.addArticleToMyList(name_of_folder);
         }
         else{
+            ArticlePageObject.addArticleToMySavedBeforeAuth();
+        }
+
+        if (Platform.getInstance().isMW()) {
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            Auth.enterLoginData(login, password);
+            Auth.clickAuthButton();
+            ArticlePageObject.waitForTitleElement();
+
+            assertEquals("We are not on the same page after login",
+                    title_of_first_article,
+                    ArticlePageObject.getArticleTitle()
+            );
             ArticlePageObject.addArticlesToMySaved();
         }
+
 
         if(Platform.getInstance().isAndroid()){
             ArticlePageObject.initNewSearch();
         }
-        else{
+        else if (Platform.getInstance().isIOS()){
             ArticlePageObject.closeArticle();
         }
         if(Platform.getInstance().isIOS()){
@@ -118,7 +132,6 @@ public class MyListsTest extends CoreTestCase {
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine(first_search);
         SearchPageObject.clickByArticleWithSubstring(second_article_name);
-
         String title_of_second_article = ArticlePageObject.getArticleTitle(second_article_name);
 
         if(Platform.getInstance().isAndroid()){
@@ -128,18 +141,20 @@ public class MyListsTest extends CoreTestCase {
             ArticlePageObject.addArticlesToMySaved();
         }
         ArticlePageObject.closeArticle();
+        NavigationUI.openNavigation();
         NavigationUI.clickMyLists();
+
         if(Platform.getInstance().isAndroid()){
             MyListsPageObject.openFolderByName(name_of_folder);
         }
-
         MyListsPageObject.findArticleInFolderByName(title_of_first_article);
         MyListsPageObject.findArticleInFolderByName(title_of_second_article);
 
-        MyListsPageObject.swipeByArticleToDelete(first_article_name);
+        MyListsPageObject.swipeByArticleToDelete(title_of_first_article);
 
         MyListsPageObject.findArticleInFolderByName(title_of_second_article);
-        MyListsPageObject.openArticleInFolderByName(second_article_name);
+        MyListsPageObject.openArticleInFolderByName(title_of_second_article);
+        assertEquals(true,ArticlePageObject.checkArticleISSaved());
         String title_of_second_article_in_folder = ArticlePageObject.getArticleTitle(second_article_name);
 
         assertEquals(
