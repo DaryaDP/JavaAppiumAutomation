@@ -12,11 +12,12 @@ public class MWSearchPageObject extends SearchPageObject {
         SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://div[contains(@class, 'wikidata-description')][contains(text(), '{SUBSTRING}')]";
         SEARCH_RESULT_ELEMENT = "css:ul.page-list>li.page-summary";
         SEARCH_EMPTY_RESULT_ELEMENT = "css:p.without-results";
+        SEARCH_RESULT_TITLE_ELEMENT = "xpath://a[@class='title ']//h3";
+
 
 
         SEARCH_LABEL_ELEMENT = "xpath://XCUIElementTypeSearchField[@value='Search Wikipedia']";
         SEARCH_CLEAR_MINI_BUTTON = "id:clear mini";
-        SEARCH_RESULT_TITLE_ELEMENT = "xpath://XCUIElementTypeLink";
         SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']/../*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{DESCRIPTION}']";
     }
 

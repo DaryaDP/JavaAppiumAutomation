@@ -82,7 +82,7 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
-    public void testSearchResultWithWord() {
+    public void testSearchResultWithWord(){
 
         String search_term = "java";
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);

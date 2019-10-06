@@ -185,24 +185,27 @@ abstract public class SearchPageObject extends MainPageObject {
         List<WebElement> search_results = getTheListOfFoundedResults();
         AtomicInteger counter = new AtomicInteger();
         if (Platform.getInstance().isAndroid()) {
-
             search_results.forEach(webElement -> {
                 if (webElement.getAttribute("text").toLowerCase().contains(search_term)) {
-                    counter.getAndIncrement();
+                    counter.incrementAndGet();
                 }
-                ;
             });
-        }else {
-
+        }else if (Platform.getInstance().isIOS()){
             search_results.forEach(webElement -> {
                 if (webElement.getAttribute("name").toLowerCase().contains(search_term)) {
                     counter.getAndIncrement();
                 }
-                ;
             });
-
         }
-        return search_results.size();
+        else {
+            search_results.forEach(webElement -> {
+                if (webElement.getText().toLowerCase().contains(search_term.toLowerCase())) {
+                    counter.getAndIncrement();
+                }
+
+            });
+        }
+        return counter.get();
     }
 
     public void waitForElementByTitleAndDescription(String title, String description){
